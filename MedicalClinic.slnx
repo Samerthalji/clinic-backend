@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="MedicalClinic.API.Tests/MedicalClinic.API.Tests.csproj" Id="c12905bf-7af3-404f-932f-040e8aa89398" />
   <Project Path="MedicalClinic.API/MedicalClinic.API.csproj" />
   <Project Path="MedicalClinic.Application/MedicalClinic.Application.csproj" Id="7f18a82c-3647-46ba-bb45-e19f7f8b9098" />
   <Project Path="MedicalClinic.Domain/MedicalClinic.Domain.csproj" />
