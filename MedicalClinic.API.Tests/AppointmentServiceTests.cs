@@ -32,7 +32,7 @@ namespace MedicalClinic.API.Tests
             _service = new AppointmentService(_uow.Object);   
         }
 
-        // ---------------- helpers ----------------
+      
 
         // the logged-in account "user-1" is patient number patientId
         private void SetupPatientUser(int patientId) =>
@@ -82,9 +82,9 @@ namespace MedicalClinic.API.Tests
             Doctor = new Doctor { Id = doctorId, FirstName = "Ali", LastName = "Saleh" },
             Patient = new Patient { Id = patientId, FirstName = "Sara", LastName = "Omar" }
         };
-        // =====================================================================
-        // CreateAsync(currentUserId, dto): 5 exits, one test for each
-        // =====================================================================
+       
+        // CreateAsync(currentUserId, dto)
+
 
         [Fact]
         public async Task CreateAsync_WhenNoPatientProfile_ThrowsBadRequestException()
@@ -161,9 +161,9 @@ namespace MedicalClinic.API.Tests
             Assert.Equal("Ali Saleh", result.DoctorFullName);
             Assert.Equal("Sara Omar", result.PatientFullName);
         }
-        // =====================================================================
+ 
         // GetMyAppointmentsAsync / GetMyDoctorAppointmentsAsync
-        // =====================================================================
+       
 
         [Fact]
         public async Task GetMyAppointmentsAsync_WhenNoPatientProfile_ThrowsBadRequestException()
@@ -206,9 +206,9 @@ namespace MedicalClinic.API.Tests
             Assert.Single(result);
             Assert.Equal("Ali Saleh", result[0].DoctorFullName);
         }
-        // =====================================================================
+   
         // GetByIdAsync(id, currentUserId, isAdmin)
-        // =====================================================================
+
 
         [Fact]
         public async Task GetByIdAsync_WhenAppointmentMissing_ThrowsNotFoundException()
@@ -255,9 +255,9 @@ namespace MedicalClinic.API.Tests
 
             Assert.Equal(5, result.Id);
         }
-        // =====================================================================
+   
         // UpdateStatusAsync(id, statusDto, currentUserId, isAdmin, isPatient)
-        // =====================================================================
+
 
         [Theory]
         [InlineData("Done")]
@@ -355,9 +355,9 @@ namespace MedicalClinic.API.Tests
             _uow.Verify(u => u.CompleteAsync(), Times.Never);
         }
 
-        // =====================================================================
+      
         // UpdateAsync(id, dto, currentUserId, isAdmin)
-        // =====================================================================
+    
 
         [Fact]
         public async Task UpdateAsync_WhenAppointmentMissing_ThrowsNotFoundException()
@@ -434,9 +434,9 @@ namespace MedicalClinic.API.Tests
             _appointments.Verify(a => a.IsDoctorAvailableAsync(It.IsAny<int>(), It.IsAny<DateTime>()), Times.Never);
             _uow.Verify(u => u.CompleteAsync(), Times.Once);
         }
-        // =====================================================================
+       
         // DeleteAsync(id)
-        // =====================================================================
+       
 
         [Fact]
         public async Task DeleteAsync_WhenAppointmentMissing_ThrowsNotFoundException_AndDoesNotSave()
