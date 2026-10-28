@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
+using MedicalClinic.Application.Exceptions;
 
 namespace MedicalClinic.Infrastructure.Services
 {
@@ -60,7 +61,7 @@ namespace MedicalClinic.Infrastructure.Services
             var existingRefreshToken = await _appDbContext.RefreshTokens.Include(rt => rt.User).FirstOrDefaultAsync(rt => rt.Token == refreshToken);
             if (existingRefreshToken == null || !existingRefreshToken.IsActive)
             {
-                return new AuthModelDto { Message = "Invalid or expired refresh token" };
+               throw new  BadRequestException ( "Invalid or expired refresh token" );
             }
             var user = existingRefreshToken.User;
             var jwtToken = await GenerateTokenAsync(user);
@@ -90,24 +91,24 @@ namespace MedicalClinic.Infrastructure.Services
         {
             // 1) نتأكد إن الدور موجود
             if (!await _roleManager.RoleExistsAsync(role))
-                return new AuthModelDto { Message = "Role does not exist" };
+                throw new BadRequestException( "Role does not exist" );
 
             // 2) تحقق مبكر من تاريخ الميلاد (قبل إنشاء أي شي بالـ DB)
             if (role == "Patient")
             {
                 if (model.DateOfBirth == null)
-                    return new AuthModelDto { Message = "تاريخ الميلاد مطلوب للمريض" };
+                    throw new BadRequestException("تاريخ الميلاد مطلوب للمريض" );
 
                 if (model.DateOfBirth.Value > DateTime.UtcNow)
-                    return new AuthModelDto { Message = "تاريخ ميلاد غير صحيح" };
+                    throw new BadRequestException("تاريخ ميلاد غير صحيح" );
             }
 
             // 3) نتأكد إن الإيميل والـ username مش مستخدمين
             if (await _userManager.FindByEmailAsync(model.Email) != null)
-                return new AuthModelDto { Message = "Email already exists" };
+                throw new BadRequestException("Email already exists" );
 
             if (await _userManager.FindByNameAsync(model.Username) != null)
-                return new AuthModelDto { Message = "Username already exists" };
+                throw new BadRequestException( "Username already exists" );
 
             // 4) تعريف الـ user
             var user = new ApplicationUser
@@ -126,14 +127,14 @@ namespace MedicalClinic.Infrastructure.Services
                 if (!result.Succeeded)
                 {
                     var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                    return new AuthModelDto { Message = $"User creation failed: {errors}" };
+                    throw new BadRequestException($"User creation failed: {errors}" );
                 }
 
                 var roleResult = await _userManager.AddToRoleAsync(user, role);
                 if (!roleResult.Succeeded)
                 {
                     var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
-                    return new AuthModelDto { Message = $"Assigning role failed: {errors}" };
+                    throw new BadRequestException(  $"Assigning role failed: {errors}" );
                 }
 
                 if (role == "Patient")
