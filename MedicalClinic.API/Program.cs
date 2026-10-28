@@ -37,6 +37,7 @@ public class Program
 
         // JWT (لازم بعد AddIdentity عشان يغلب الـ default schemes)
         builder.Services.AddJwtAuthentication(builder.Configuration);
+        builder.Services.AddApplicationServices();
 
         // Services
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -25,8 +25,8 @@ namespace MedicalClinic.API.Controllers
             var result = await _authService.RegisterAsync(request);
             if(!result.IsAuthenticated)
             {
-                return BadRequest(result.Message);
-            }
+                throw new BadRequestException(result.Message);
+            }  
 
             return Ok(result);
         }
@@ -39,7 +39,7 @@ namespace MedicalClinic.API.Controllers
 
             var result = await _authService.RegisterWithRoleAsync(request, request.Role);
             if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
+                throw new BadRequestException(result.Message);
 
             // ما برجّع الـ tokens للأدمن، هاي بيانات المستخدم الجديد مش الأدمن
             return Ok(new { message = "User created", result.Username, result.Email, result.Roles });
@@ -55,7 +55,7 @@ namespace MedicalClinic.API.Controllers
             var result = await _authService.GetTokenAsync(request);
             if (!result.IsAuthenticated)
             {
-                return BadRequest(result.Message);
+                throw new BadRequestException(result.Message);
             }
             return Ok(result);
         }
@@ -69,7 +69,7 @@ namespace MedicalClinic.API.Controllers
             var result = await _authService.RefreshTokenAsync(request.refreshToken);
             if (!result.IsAuthenticated)
             {
-                return BadRequest(result.Message);
+                throw new BadRequestException(result.Message);
             }
             return Ok(result);
         }
@@ -83,7 +83,8 @@ namespace MedicalClinic.API.Controllers
             var result = await _authService.RevokeTokenAsync(request.refreshToken);
             if (!result)
             {
-                return BadRequest(new { message = "Token is invalid or already revoked" });
+                throw new BadRequestException("Token is invalid or already revoked");
+               
             }
                 return Ok(new { message = "Token revoked successfully" });
             }

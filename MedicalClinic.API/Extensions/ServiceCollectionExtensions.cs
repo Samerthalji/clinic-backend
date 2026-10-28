@@ -1,15 +1,24 @@
-﻿using MedicalClinic.Domain.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using MedicalClinic.Application.Interfaces;
+using MedicalClinic.Application.Services;
+using MedicalClinic.Domain.Jwt;
 using MedicalClinic.Domain.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 
 namespace MedicalClinic.API.Extensions
 {
     // MedicalClinic.API/Extensions/ServiceCollectionExtensions.cs
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IDoctorService, DoctorServices>();
+            services.AddScoped<IPatientServices, PatientServices>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            return services;
+        }
         public static IServiceCollection AddJwtAuthentication(
             this IServiceCollection services, IConfiguration config)
         {
