@@ -21,4 +21,4 @@ MedicalClinic.API             Controllers, middleware, exception handling, DI se
 MedicalClinic.Application     DTOs, interfaces, services, custom exceptions
 MedicalClinic.Domain          Entities and core models
 MedicalClinic.Infrastructure  EF Core DbContext, migrations, repositories, auth
-MedicalClinic.Application.UnitTests  Unit tests for application services
+MedicalClinic.API.Tests   Unit tests for application services
