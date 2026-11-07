@@ -9,8 +9,6 @@ using Xunit;
 
 namespace MedicalClinic.API.Tests.Integration;
 
-// Tests 5-8. Each test creates its own doctor and its own patients (unique emails),
-// so the tests do not depend on each other even though they share one in-memory database.
 public class AppointmentFlowIntegrationTests : IClassFixture<Customwebapplicationfactory>
 {
     private const string PatientPassword = "Patient@12345";
@@ -102,23 +100,22 @@ public class AppointmentFlowIntegrationTests : IClassFixture<Customwebapplicatio
         await AssertStatusAsync(HttpStatusCode.Created, create);
         var appointment = await create.Content.ReadFromJsonAsync<AppointmentDto>();
 
-        // control check: the owner can read it, so the refusal below is about identity and nothing else
-        var ownerRead = await patientA.GetAsync($"/api/Appointments/{appointment!.Id}");
+       var ownerRead = await patientA.GetAsync($"/api/Appointments/{appointment!.Id}");
         await AssertStatusAsync(HttpStatusCode.OK, ownerRead);
 
         var otherRead = await patientB.GetAsync($"/api/Appointments/{appointment.Id}");
         await AssertStatusAsync(HttpStatusCode.Forbidden, otherRead);
     }
 
-    // =====================================================================
+
     // Helpers
-    // =====================================================================
+
 
     private static DateTime Tomorrow(int hour) => DateTime.UtcNow.Date.AddDays(1).AddHours(hour);
 
     private static string UniqueEmail(string prefix) => $"{prefix}-{Guid.NewGuid():N}@test.com";
 
-    // Shows the response body when the status is not what we expect (the body explains why).
+
     private static async Task AssertStatusAsync(HttpStatusCode expected, HttpResponseMessage response)
     {
         if (response.StatusCode != expected)
@@ -131,7 +128,7 @@ public class AppointmentFlowIntegrationTests : IClassFixture<Customwebapplicatio
             throw new InvalidOperationException($"{(int)response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
     }
 
-    // Logs in and puts the token on the client, exactly like the frontend does.
+
     private static async Task LoginAsync(HttpClient client, string email, string password)
     {
         var response = await client.PostAsJsonAsync("/api/Auth/Login",
@@ -167,7 +164,7 @@ public class AppointmentFlowIntegrationTests : IClassFixture<Customwebapplicatio
         var admin = _factory.CreateClient();
         await LoginAsync(admin, Customwebapplicationfactory.AdminEmail, Customwebapplicationfactory.AdminPassword);
 
-        // Remember which doctors exist, so we can find the new one afterwards.
+        
         var before = (await admin.GetFromJsonAsync<List<DoctorDto>>("/api/Doctors"))!
             .Select(d => d.Id).ToHashSet();
 
