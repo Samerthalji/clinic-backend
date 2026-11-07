@@ -11,8 +11,8 @@ REST API for a clinic appointment management system, built with ASP.NET Core fol
 - Appointment booking and status management (Pending, Confirmed, Completed, Cancelled).
 - Doctors and patients management with search and pagination.
 - Global exception handling with consistent `ProblemDetails` responses.
-- Admin account seeded from configuration (no credentials in source code).
-- Application service layer covered with unit tests using **xUnit** and **Moq**.
+- Admin account seeded from configuration (no credentials in source code)
+- Application service layer and integration flows covered with unit and integration tests using xUnit, Moq, and WebApplicationFactory.
 
 ## Architecture
 
